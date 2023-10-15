@@ -61,10 +61,8 @@ struct ContentView: View {
                   
                     messageString = (messageString == message1 ? message2 : message1)
                  
-//                    imageName = (imageName == "image0" ? "image1" : "image0")
-//
-//
-                   //TODO: update the imageName variable
+
+                  
                     
                     // This restets the images to the beginning after 9
                     imageName = "image\(imageNumber)"
