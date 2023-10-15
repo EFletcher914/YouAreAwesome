@@ -11,7 +11,9 @@ struct ContentView: View {
     
     @State private var messageString = ""
     
+    @State private var imageName = ""
     
+    @State private var imageNumber = 0
     
     var body: some View {
         
@@ -20,7 +22,19 @@ struct ContentView: View {
         
         VStack {
             
+            Image(imageName)
+                .resizable()
+                .scaledToFit()
+                .cornerRadius(30)
+                .shadow(radius: 30)
+                .padding()
+            
+            
+            
+            
             Spacer()
+            
+         
             Text(messageString)
                 .font(.largeTitle)
                 .fontWeight(.semibold)
@@ -31,33 +45,43 @@ struct ContentView: View {
                 .padding()
                 .frame( height: 150)
                 .frame(maxWidth: .infinity)
-            //                .border(.orange, width: 1)
                 .padding()
             
             Spacer()
             
+                
             
-            
-            HStack {
-                Button("Awesome") {
-                    // action performed when button is pressed
-                    messageString = "You Are Awesome!"
+          
+                Button("Show Message") {
+                 
+                    
+                    let message1 = "You Are Awesome!"
+                    let message2 = "You Are Great"
+                  
+                  
+                    messageString = (messageString == message1 ? message2 : message1)
+                 
+//                    imageName = (imageName == "image0" ? "image1" : "image0")
+//
+//
+                   //TODO: update the imageName variable
+                    
+                    // This restets the images to the beginning after 9
+                    imageName = "image\(imageNumber)"
+                    imageNumber = imageNumber + 1
+                 
+                    if imageNumber > 9 {
+                        imageNumber = 0
+                    }
+                   
+                    
                     
                     
                 }
                 .buttonStyle(.borderedProminent)
                 
-                Spacer()
-                
-                Button("Great") {
-                    // action performed when button is pressed
-                    messageString = "You Are Great!"
-                }
-                
-                .buttonStyle(.borderedProminent)
-            }
-            //            .border(.purple, width: 5)
-            .padding()
+                .padding()
+              
             .tint(Color("OceanBlue"))
             
         }
