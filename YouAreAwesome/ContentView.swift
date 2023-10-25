@@ -24,6 +24,8 @@ struct ContentView: View {
     
     @State private var lastSoundNumber = -1
     
+    @State private var soundIsOn = true
+    
     var body: some View {
         
         
@@ -60,91 +62,87 @@ struct ContentView: View {
             Spacer()
             
             
-            
-            
-            Button("Show Message") {
+            HStack {
                 
-                let messages = ["You Are Great!",
-                                "You Are Awesome!",
-                                "You can do it!",
-                                "Don't Stop Keep Going!",
-                                "Beileve In YourSelf!",
-                                "Quitting Is Not An Option!",
-                                "You Make Me Smile!"]
+                Text("Sound On:")
+                Toggle("", isOn: $soundIsOn)
+                    .labelsHidden()
+                    .onChange(of: soundIsOn) {_ in
+                        if audioPlayer != nil && audioPlayer.isPlaying  {
+                            audioPlayer.stop()
+                            
+                        }
+                    }
                 
+                Spacer()
                 
-                
-                // if messageNumber == laastMessageNumber {
-                //keep generating a new random messageNumber
-                // untik you get a messageNumber!= lastMessageNumber
-                // Set messageString to message[messageNumber]
-                // update the lastMessageNumber with messageNumber
-                
-                
-                
-                
-                // generate a random messagNumber to use as an index
-                
-                var messageNumber: Int
-                
-                repeat {
-                    messageNumber = Int.random(in: 0...messages.count-1)
-                } while messageNumber == lastMessageNumber
-                
-                messageString = messages[messageNumber]
-                lastMessageNumber = messageNumber
-                
-                // This restets the images to the beginning after 9
-                
-                
-                var imageNumber: Int
-                repeat {
-                    imageNumber = Int.random(in: 0...9)
+                Button("Show Message") {
                     
-                } while imageNumber == lastImageNumber
-                imageName = "image\(imageNumber)"
-                lastImageNumber = imageNumber
-                
-               
-                // create random soound
-                
-                
-                
-               
-                var soundNumber: Int
-                repeat {
-                    soundNumber = Int.random(in: 0...5)
-                } while soundNumber == lastSoundNumber
-                lastSoundNumber = soundNumber
-               let  soundName = "sound\(soundNumber)"
-                
-                
-                guard let soundFile = NSDataAsset(name: soundName)
-                else {
-                    print("😡 Could not read file named \(soundName)")
-                    return
-                }
-                do {
-                    audioPlayer =  try AVAudioPlayer(data: soundFile.data)
-                    audioPlayer.play()
-                } catch {
-                    print("😡ERROR: \(error.localizedDescription) creating audioPlayer")
-                }
-            }
-                    .buttonStyle(.borderedProminent)
-                                             
-                    .padding()
-                                             
-                    .tint(Color("OceanBlue"))
-                                             
-                                             }
-                                             }
-                                             }
-                                             
-                                             
-                                             
-                                             struct ContentView_Previews: PreviewProvider {
-                    static var previews: some View {
-                        ContentView()
+                    let messages = ["You Are Great!",
+                                    "You Are Awesome!",
+                                    "You can do it!",
+                                    "Don't Stop Keep Going!",
+                                    "Beileve In YourSelf!",
+                                    "Quitting Is Not An Option!",
+                                    "You Make Me Smile!"]
+                    
+                    // generate a random messagNumber to use as an index
+                    
+                    lastMessageNumber = nonRepeatingRandom(lastNumber: lastMessageNumber, upperBound: messages.count-1)
+                    messageString = messages[lastMessageNumber]
+                    
+                    
+                    // This restets the images to the beginning after 9
+                    lastImageNumber = nonRepeatingRandom(lastNumber: lastImageNumber, upperBound: 9)
+                    imageName = "image\(lastImageNumber)"
+                    
+                    // create random soound
+                    lastSoundNumber = nonRepeatingRandom(lastNumber: lastMessageNumber, upperBound: 5)
+                    
+                    if soundIsOn {
+                        playSound(soundName: "sound\(lastSoundNumber)")
                     }
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(Color("OceanBlue"))
+                
+            }
+            
+        }
+        .padding()
+    }
+    
+    
+    func nonRepeatingRandom(lastNumber: Int, upperBound: Int) -> Int {
+        var newNumber: Int
+        repeat {
+            newNumber = Int.random(in: 0...upperBound)
+        } while newNumber == lastNumber
+        return newNumber
+    }
+    
+    
+    
+    
+    func playSound(soundName: String) {
+        guard let soundFile = NSDataAsset(name: soundName)
+        else {
+            print("😡 Could not read file named \(soundName)")
+            return
+        }
+        do {
+            audioPlayer =  try AVAudioPlayer(data: soundFile.data)
+            audioPlayer.play()
+        } catch {
+            print("😡ERROR: \(error.localizedDescription) creating audioPlayer")
+        }
+    }
+}
+
+
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
